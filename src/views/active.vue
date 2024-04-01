@@ -40,10 +40,24 @@ const form = reactive({
     username: useUserStore().getUsername
 })
 
+const validate_code = (rule, value, callback) => {
+    if (!value) {
+        return callback(new Error('验证码不能为空'));
+    } else {
+        // 使用正则表达式匹配是否为6位纯数字
+        const regex = /^\d{6}$/;
+        if (regex.test(value)) {
+            return callback();
+        } else {
+            return callback(new Error('验证码格式不正确'));
+        }
+    }
+}
+
 const rules = reactive({
     v_code: [
         { required: true, message: '验证码不能为空', trigger: 'blur' },
-        // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+        { validator: validate_code, message: '验证码格式不正确', trigger: ['blur'] }
     ]
 })
 
